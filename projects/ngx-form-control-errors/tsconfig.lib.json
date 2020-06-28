@@ -9,7 +9,6 @@
     "types": [],
     "lib": ["dom", "es2018"]
   },
-  "emitDecoratorMetadata": false,
   "angularCompilerOptions": {
     "skipTemplateCodegen": true,
     "strictMetadataEmit": true,

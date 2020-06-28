@@ -1,6 +1,6 @@
 {
 	"extends": "../../tslint.json",
 	"rules": {
-		"variable-name": false,
+		"variable-name": false
 	}
 }

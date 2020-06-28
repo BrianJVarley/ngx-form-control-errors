@@ -11,7 +11,7 @@ import { NgxFormControlErrorsModule } from 'ngx-form-control-errors';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    NgxFormControlErrorsModule,
+    NgxFormControlErrorsModule
   ],
   providers: [],
   bootstrap: [AppComponent],

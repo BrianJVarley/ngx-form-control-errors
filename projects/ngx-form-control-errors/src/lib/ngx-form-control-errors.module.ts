@@ -1,56 +1,37 @@
-import { NgModule } from '@angular/core';
-import {
-  ControlErrorsDirective,
-  ControlErrorContainerDirective,
-  ControlErrorComponent,
-  FormSubmitDirective,
-} from '../public-api';
+import { NgModule, ModuleWithProviders } from '@angular/core';
+import { ControlErrorContainerDirective } from './directives/control-error-container.directive';
+import { ControlErrorsDirective } from './directives/control-errors.directive';
+import { FormSubmitDirective } from './directives/form-submit.directive';
+
+import { ControlErrorComponent } from './components/control-error/control-error.component';
+
 import { CommonModule } from '@angular/common';
 
 
-const api = [
-  ControlErrorComponent,  
-  ControlErrorContainerDirective,
-  ControlErrorsDirective,
-  FormSubmitDirective,
-];
-
 @NgModule({
   declarations: [
+    ControlErrorComponent,
     ControlErrorContainerDirective,
     ControlErrorsDirective,
-    ControlErrorComponent,
     FormSubmitDirective,
   ],
   imports: [CommonModule],
-  exports: [api],
+  exports: [ ControlErrorComponent,  
+    ControlErrorContainerDirective,
+    ControlErrorsDirective,
+    FormSubmitDirective,],
   entryComponents: [ControlErrorComponent]
 })
-export class NgxFormControlErrorsModule {}
-
-/**
- * Example extending module to accept cofig object / providers
- */
-// @NgModule({
-//   declarations: [ControlErrorsDirective, ControlErrorAnchorDirective, ControlErrorComponent, FormSubmitDirective],
-//   imports: [CommonModule],
-//   exports: [api],
-//   entryComponents: [ControlErrorComponent]
-// })
-// export class ErrorTailorModule {
-//   static forRoot(config: ErrorTailorConfig = {}): ModuleWithProviders {
-//     return {
-//       ngModule: ErrorTailorModule,
-//       providers: [
-//         {
-//           provide: ErrorTailorConfigProvider,
-//           useValue: config
-//         },
-//         {
-//           provide: FORM_ERRORS,
-//           ...config.errors
-//         } as any
-//       ]
-//     };
-//   }
+export class NgxFormControlErrorsModule {
+// static forRoot(config: any = {}): ModuleWithProviders<any> {
+//   return {
+//     ngModule: NgxFormControlErrorsModule,
+//     providers: [
+//       {
+//         provide: FORM_ERRORS,
+//         ...config.errors
+//       } as any
+//     ]
+//   };
 // }
+}
