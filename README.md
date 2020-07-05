@@ -1,6 +1,7 @@
 # NgxFormControlErrorsLibrary
-
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.0.
+Based off [@ngneat/error-tailor](https://github.com/ngneat/error-tailor) a dynamic approach to generating 
+Reactive Form Error messages using directives. Aim is to add extra functionality for translating error message using 
+`angular-i18next` and Translation As A Service.
 
 ## Development server
 

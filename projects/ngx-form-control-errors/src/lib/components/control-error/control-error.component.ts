@@ -1,29 +1,34 @@
 import {
   Component,
-  OnInit,
-  Input,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  ElementRef,
 } from '@angular/core';
 
 @Component({
-  template: `<p class="help is-danger" [class.hide]="_hide">{{ _text }}</p>`,
+  template: `
+    <label class="control-error" [class.hide-control]="hide">{{
+      _text
+    }}</label>
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./control-error.component.scss'],
 })
-export class ControlErrorComponent implements OnInit {
+export class ControlErrorComponent {
   _text: string | null = null;
-  _hide = true;
+  hide = true;
 
-  @Input() set text(value) {
+  set customClass(className: string) {
+    this.host.nativeElement.classList.add(className);
+  }
+
+  set text(value: string | null) {
     if (value !== this._text) {
       this._text = value;
-      this._hide = !value;
+      this.hide = !value;
       this.cdr.markForCheck();
     }
   }
 
-  constructor(private cdr: ChangeDetectorRef) {}
-
-  ngOnInit(): void {}
+  constructor(private cdr: ChangeDetectorRef, private host: ElementRef<HTMLElement>) {}
 }
