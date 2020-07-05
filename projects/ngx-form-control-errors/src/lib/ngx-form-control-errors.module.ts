@@ -7,7 +7,6 @@ import { ControlErrorComponent } from './components/control-error/control-error.
 
 import { CommonModule } from '@angular/common';
 
-
 @NgModule({
   declarations: [
     ControlErrorComponent,
@@ -16,22 +15,24 @@ import { CommonModule } from '@angular/common';
     FormSubmitDirective,
   ],
   imports: [CommonModule],
-  exports: [ ControlErrorComponent,  
+  exports: [
+    ControlErrorComponent,
     ControlErrorContainerDirective,
     ControlErrorsDirective,
-    FormSubmitDirective,],
-  entryComponents: [ControlErrorComponent]
+    FormSubmitDirective,
+  ],
+  entryComponents: [ControlErrorComponent],
 })
 export class NgxFormControlErrorsModule {
-// static forRoot(config: any = {}): ModuleWithProviders<any> {
-//   return {
-//     ngModule: NgxFormControlErrorsModule,
-//     providers: [
-//       {
-//         provide: FORM_ERRORS,
-//         ...config.errors
-//       } as any
-//     ]
-//   };
-// }
+  // static forRoot(config: any = {}): ModuleWithProviders<any> {
+  //   return {
+  //     ngModule: NgxFormControlErrorsModule,
+  //     providers: [
+  //       {
+  //         provide: FORM_ERRORS,
+  //         ...config.errors
+  //       } as any
+  //     ]
+  //   };
+  // }
 }
