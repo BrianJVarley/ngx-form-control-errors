@@ -15,6 +15,27 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
+## CSS Naming Convention
+
+> Try to follow BEM. It’s one of the most commonly used convention by now.
+> (double dash) means variation of the element. (double underscore) means children of the element.
+
+Example
+
+```JavaScript
+<button class='btn btn--warning'> <!-- .btn--warning one of the variation of .btn-->
+  <div class="btn__text"></div> <!-- .btn__text one of the child of .btn-->
+</button>
+
+.btn--warning {
+/* Yay ! By convention, I know that code here relate to the variation "warning" of a button, without event looking at the HMTL code. What a relief !*/
+}
+.btn__text {
+/* For same reason, I know that this style will target text in a button */
+}
+
+```
+
 ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).

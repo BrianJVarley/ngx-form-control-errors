@@ -1,38 +1,62 @@
+<!--<h1>Reactive</h1>-->
 <form [formGroup]="form" NgxFormControlErrors>
-	<div class="field">
-		<div class="control">
-			<input class="input" formControlName="name" placeholder="Name">
-    </div>
+  <div class="form-group">
+    <input class="form-control" formControlName="name" placeholder="Name" />
   </div>
-  <div class="field">
-    <div class="control" controlErrorContainer>
-      <label class="checkbox">
-      <input type="checkbox" formControlName="terms" [customErrors]="customErrors">
-      I agree to the <a href="#">terms and conditions</a>
-      </label>
-    </div>
+
+  <div class="form-check form-group">
+    <input class="form-check-input" type="checkbox" formControlName="terms" id="check" [controlErrorContainer]="anchor" />
+    <label class="form-check-label" for="check">
+      I agree to the terms and conditions
+    </label>
+    <ng-template controlErrorContainer #anchor="controlErrorContainer"></ng-template>
   </div>
-  <div formGroupName="address" class="field">
-    <div class="field">
-      <div class="control">
-        <input class="input" formControlName="city" placeholder="City">
-      </div>
-    </div>
-    <div class="field">
-      <div class="control">
-        <input class="input" formControlName="country" placeholder="Country">
-      </div>
-    </div>
+
+  <div class="form-group">
+    <span class="form-radio-group-label">Communication language:</span>
+    <input
+      type="radio"
+      name="languages"
+      formControlName="languages"
+      value="en"
+      id="en"
+      [controlErrorContainer]="anchorRadio"
+    />
+    <label class="form-radio-label" for="en">English</label>
+    <input type="radio" name="languages" formControlName="languages" value="de" id="de" controlErrorsIgnore />
+    <label class="form-radio-label" for="de">German</label>
+    <input type="radio" name="languages" formControlName="languages" value="cs" id="cs" controlErrorsIgnore />
+    <label class="form-radio-label" for="cs">Czech</label>
+    <ng-template controlErrorContainer #anchorRadio="controlErrorContainer"></ng-template>
   </div>
-  <div class="control">
-    <button class="button is-link is-small">Submit</button>
+
+  <section formGroupName="address">
+    <div class="form-group">
+      <input class="form-control" formControlName="city" placeholder="City"/>
+    </div>
+
+    <div class="form-group">
+      <input class="form-control" formControlName="country" placeholder="Country" [customErrors]="customErrors" />
+    </div>
+  </section>
+
+  <div class="form-group">
+    <select formControlName="animal" class="form-control">
+      <option [ngValue]="null">- -</option>
+      <option *ngFor="let option of options; index as index" [ngValue]="option">
+        {{ option.label }}
+      </option>
+    </select>
+  </div>
+
+  <div class="text-right">
+    <button class="btn btn-success">Submit</button>
   </div>
 </form>
 
 
 <!-- <h1>Standalone</h1>
-<div class="field">
-  <div class="control">
+  <div class="control" NgxFormControlErrors>
     <input class="input" [formControl]="control" placeholder="Name">
   </div>
-</div> -->
+-->
