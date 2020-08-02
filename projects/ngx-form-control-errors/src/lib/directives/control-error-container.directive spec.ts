@@ -6,7 +6,7 @@ import { ControlErrorContainerDirective } from './control-error-container.direct
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'get-container',
-  template: ''
+  template: '',
 })
 class GetContainerComponent {
   @Input()
@@ -17,7 +17,7 @@ describe('ControlErrorContainerDirective', () => {
   let spectator: SpectatorDirective<ControlErrorContainerDirective>;
   const createDirective = createDirectiveFactory({
     directive: ControlErrorContainerDirective,
-    declarations: [GetContainerComponent]
+    declarations: [GetContainerComponent],
   });
 
   beforeEach(() => {
@@ -26,6 +26,11 @@ describe('ControlErrorContainerDirective', () => {
       <get-container [anchor]="anchor"></get-container>
     `);
   });
+
+  spectator = createDirective(`
+      <div controlErrorAnchor #anchor="controlErrorAnchor"></div>
+      <get-anchor [anchor]="anchor"></get-anchor>
+    `);
 
   it('should create', () => {
     expect(spectator.directive).toBeTruthy();
@@ -37,6 +42,8 @@ describe('ControlErrorContainerDirective', () => {
 
   it('should be exported as `controlErrorContainer`', () => {
     spectator.detectChanges();
-    expect(spectator.query(GetContainerComponent).anchor).toBe(spectator.directive);
+    expect(spectator.query(GetContainerComponent).anchor).toBe(
+      spectator.directive
+    );
   });
 });

@@ -17,19 +17,25 @@ import { FORM_ERRORS } from '../providers/form-errors';
 import { ControlErrorComponent } from '../components/control-error/control-error.component';
 import { ControlErrorContainerDirective } from './control-error-container.directive';
 import { FormSubmitDirective } from './form-submit.directive';
-import { merge, EMPTY, Observable, Subject } from 'rxjs';
+import { merge, EMPTY, Observable, Subject, fromEvent } from 'rxjs';
 import { ErrorsMap } from '../types';
-import { distinctUntilChanged, switchMap, startWith, takeUntil } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  switchMap,
+  startWith,
+  takeUntil,
+} from 'rxjs/operators';
 
 @Directive({
   selector:
     '[formControlName]:not([controlErrorsIgnore]), [formControl]:not([controlErrorsIgnore]), [formGroup]:not([controlErrorsIgnore]), [formGroupName]:not([controlErrorsIgnore]), [formArrayName]:not([controlErrorsIgnore])',
 })
-export class ControlErrorsDirective implements OnInit, OnDestroy {
-  @Input() customErrors: ErrorsMap  = {};
-  @Input() controlErrorContainer: ControlErrorContainerDirective;
+export class ControlErrorDirective implements OnInit, OnDestroy {
+  @Input() customErrors: ErrorsMap = {};
   @Input() controlErrorsClass: string | undefined;
-
+  @Input() controlErrorsOnAsync = true;
+  @Input() controlErrorsOnBlur = true;
+  @Input() controlErrorContainer: ControlErrorContainerDirective;
 
   private ref: ComponentRef<ControlErrorComponent>;
   private anchor: ViewContainerRef;
@@ -41,8 +47,9 @@ export class ControlErrorsDirective implements OnInit, OnDestroy {
     private vcr: ViewContainerRef,
     private resolver: ComponentFactoryResolver,
     private host: ElementRef,
-    @Inject(FORM_ERRORS) private errors,
-    @Optional() private controlErrorContainerParent: ControlErrorContainerDirective,
+    @Inject(FORM_ERRORS) private globalErrors,
+    @Optional()
+    private controlErrorContainerParent: ControlErrorContainerDirective,
     @Optional() @Host() private form: FormSubmitDirective,
     @Optional() @Self() private ngControl: NgControl,
     @Optional() @Self() private controlContainer: ControlContainer
@@ -53,33 +60,42 @@ export class ControlErrorsDirective implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.anchor = this.resolveAnchor();
     this.control = (this.controlContainer || this.ngControl).control;
+    const hasAsyncValidator = !!this.control.asyncValidator;
 
-    const statusChanges$ = this.control.statusChanges.pipe(distinctUntilChanged());
+    const statusChanges$ = this.control.statusChanges.pipe(
+      distinctUntilChanged()
+    );
     const valueChanges$ = this.control.valueChanges;
     const controlChanges$ = merge(statusChanges$, valueChanges$);
-   
-    const changesOnSubmit$ = this.submit$.pipe(switchMap(() => controlChanges$.pipe(startWith(true))));
 
-    merge(changesOnSubmit$)
+    let changesOnAsync$: Observable<any> = EMPTY;
+    let changesOnBlur$: Observable<any> = EMPTY;
+
+    if (this.controlErrorsOnAsync && hasAsyncValidator) {
+      changesOnAsync$ = statusChanges$.pipe(startWith(true));
+    }
+
+    if (this.controlErrorsOnBlur) {
+      const blur$ = fromEvent(this.host.nativeElement, 'focusout');
+      changesOnBlur$ = blur$.pipe(
+        switchMap(() => valueChanges$.pipe(startWith(true)))
+      );
+    }
+
+    const changesOnSubmit$ = this.submit$.pipe(
+      switchMap(() => controlChanges$.pipe(startWith(true)))
+    );
+
+    merge(changesOnAsync$, changesOnBlur$, changesOnSubmit$)
       .pipe(takeUntil(this.destroy))
       .subscribe(() => this.valueChanges());
   }
 
-  private resolveAnchor(): ViewContainerRef {
-    if (this.controlErrorContainer) {
-      return this.controlErrorContainer.vcr;
-    }
-
-    if (this.controlErrorContainerParent) {
-      return this.controlErrorContainerParent.vcr;
-    }
-
-    return this.vcr;
-  }
-
   ngOnDestroy(): void {
     this.destroy.next();
-    if (this.ref) { this.ref.destroy(); }
+    if (this.ref) {
+      this.ref.destroy();
+    }
     this.ref = null;
   }
 
@@ -87,9 +103,16 @@ export class ControlErrorsDirective implements OnInit, OnDestroy {
     const controlErrors = this.control.errors;
     if (controlErrors) {
       const [firstKey] = Object.keys(controlErrors);
-      const getError = this.errors[firstKey];
+      const getError = this.globalErrors[firstKey];
+
+      if (!getError) {
+        return;
+      }
+
       const text =
-        this.customErrors[firstKey] || getError(controlErrors[firstKey]);
+        typeof getError === 'function'
+          ? getError(controlErrors[firstKey])
+          : getError;
       this.setError(text);
     } else if (this.ref) {
       this.setError(null);
@@ -110,5 +133,17 @@ export class ControlErrorsDirective implements OnInit, OnDestroy {
     if (this.controlErrorsClass) {
       instance.customClass = this.controlErrorsClass;
     }
+  }
+
+  private resolveAnchor(): ViewContainerRef {
+    if (this.controlErrorContainer) {
+      return this.controlErrorContainer.vcr;
+    }
+
+    if (this.controlErrorContainerParent) {
+      return this.controlErrorContainerParent.vcr;
+    }
+
+    return this.vcr;
   }
 }
