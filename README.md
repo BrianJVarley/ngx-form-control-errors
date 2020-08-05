@@ -1,7 +1,7 @@
 # NgxFormControlErrorsLibrary
-Based off [@ngneat/error-tailor](https://github.com/ngneat/error-tailor) a dynamic approach to generating 
-Reactive Form Error messages using directives. Aim is to add extra functionality for translating error message using 
-`angular-i18next` and Translation As A Service.
+
+Based off [@ngneat/error-tailor](https://github.com/ngneat/error-tailor) a dynamic approach to generating
+Reactive Form Error messages using directives.
 
 ## Development server
 
@@ -14,6 +14,14 @@ Run `ng generate component component-name` to generate a new component. You can 
 ## Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+
+> Note: Rebuild package to update local reference to NgxFormControlErrorsModule in app.module
+
+```
+npm run build:lib:prod
+```
+
+The test project references the local package located in the `dist/` folder.
 
 ## CSS Naming Convention
 
@@ -47,3 +55,7 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+## TODO's
+
+- Rename package
