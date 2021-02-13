@@ -13,7 +13,7 @@ import {
   ElementRef,
 } from '@angular/core';
 import { NgControl, ControlContainer, AbstractControl } from '@angular/forms';
-import { FORM_ERRORS } from '../providers/form-errors';
+import { FormControlErrorsConfig, FormControlErrorsConfigProvider, FORM_ERRORS } from '../providers/form-errors';
 import { ControlErrorComponent } from '../components/control-error/control-error.component';
 import { ControlErrorContainerDirective } from './control-error-container.directive';
 import { FormSubmitDirective } from './form-submit.directive';
@@ -42,12 +42,15 @@ export class ControlErrorDirective implements OnInit, OnDestroy {
   private submit$: Observable<Event>;
   private control: AbstractControl;
   private destroy = new Subject();
+  private mergedConfig: FormControlErrorsConfig = {};
+
 
   constructor(
     private vcr: ViewContainerRef,
     private resolver: ComponentFactoryResolver,
     private host: ElementRef,
     @Inject(FORM_ERRORS) private globalErrors,
+    @Inject(FormControlErrorsConfigProvider) private config: FormControlErrorsConfig,
     @Optional()
     private controlErrorContainerParent: ControlErrorContainerDirective,
     @Optional() @Host() private form: FormSubmitDirective,
@@ -55,6 +58,7 @@ export class ControlErrorDirective implements OnInit, OnDestroy {
     @Optional() @Self() private controlContainer: ControlContainer
   ) {
     this.submit$ = this.form ? this.form.submit$ : EMPTY;
+    this.mergedConfig = this.buildConfig();
   }
 
   ngOnInit(): void {
@@ -97,6 +101,10 @@ export class ControlErrorDirective implements OnInit, OnDestroy {
       this.ref.destroy();
     }
     this.ref = null;
+  }
+
+  private get isInput() {
+    return this.mergedConfig.blurPredicate(this.host.nativeElement);
   }
 
   private valueChanges(): void {
@@ -145,5 +153,18 @@ export class ControlErrorDirective implements OnInit, OnDestroy {
     }
 
     return this.vcr;
+  }
+
+
+  private buildConfig(): FormControlErrorsConfig {
+    return {
+      ...{
+        blurPredicate(element) {
+          return element.tagName === 'INPUT' || element.tagName === 'SELECT';
+        },
+        controlErrorComponent: ControlErrorComponent 
+      },
+      ...this.config
+    };
   }
 }

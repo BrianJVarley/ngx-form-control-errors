@@ -11,7 +11,20 @@ import { NgxFormControlErrorsModule } from 'ngx-form-control-errors';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    NgxFormControlErrorsModule
+    NgxFormControlErrorsModule.forRoot({
+      errors: {
+        useFactory() {
+          return {
+            required: 'This field is required (custom error message, supplied in NgxFormControlErrorsModule config)',
+            minlength: ({ requiredLength, actualLength }) => `Expect ${requiredLength} but got ${actualLength}`,
+            invalidAddress: error => `Address not valid`
+          };
+        },
+        deps: []
+      }
+      //controlErrorComponent: CustomControlErrorComponent, // Uncomment to see errors being rendered using a custom component
+      //controlErrorComponentAnchorFn: controlErrorComponentAnchorFn // Uncomment to see errors being positioned differently
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -6,6 +6,7 @@ import { FormSubmitDirective } from './directives/form-submit.directive';
 import { ControlErrorComponent } from './components/control-error/control-error.component';
 
 import { CommonModule } from '@angular/common';
+import { FormControlErrorsConfig, FormControlErrorsConfigProvider, FORM_ERRORS } from './providers/form-errors';
 
 const api = [
   ControlErrorComponent,
@@ -26,17 +27,19 @@ const api = [
   entryComponents: [ControlErrorComponent],
 })
 export class NgxFormControlErrorsModule {
-  // TODO: If errors need to be extended with pre-translated erorrs
-  // implement this static method in app.module
-  // static forRoot(config: any = {}): ModuleWithProviders<any> {
-  //   return {
-  //     ngModule: NgxFormControlErrorsModule,
-  //     providers: [
-  //       {
-  //         provide: FORM_ERRORS,
-  //         ...config.errors
-  //       } as any
-  //     ]
-  //   };
-  // }
+  static forRoot(config: FormControlErrorsConfig = {}): ModuleWithProviders<NgxFormControlErrorsModule> {
+    return {
+      ngModule: NgxFormControlErrorsModule,
+      providers: [
+        {
+          provide: FormControlErrorsConfigProvider,
+          useValue: config
+        },
+        {
+          provide: FORM_ERRORS,
+          ...config.errors
+        } as any
+      ]
+    };
+  }
 }
